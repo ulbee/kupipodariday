@@ -8,6 +8,9 @@ import { WishlistsModule } from './wishlists/wishlists.module';
 import { OffersModule } from './offers/offers.module';
 
 import { User } from './users/entities/user.entity';
+import { Wish } from './wishes/entities/wish.entity';
+import { Wishlist } from './wishlists/entities/wishlist.entity';
+import { Offer } from './offers/entities/offer.entity';
 
 @Module({
   imports: [
@@ -18,7 +21,9 @@ import { User } from './users/entities/user.entity';
       username: 'student',
       password: 'student',
       database: 'kupipodariday',
-      entities: [User],
+      schema: 'kupipodariday',
+      logging: true,
+      entities: [User, Wish, Wishlist, Offer],
       synchronize: true,
     }),
     UsersModule,
