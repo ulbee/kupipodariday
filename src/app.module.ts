@@ -22,7 +22,6 @@ import { Offer } from './offers/entities/offer.entity';
       password: 'student',
       database: 'kupipodariday',
       schema: 'kupipodariday',
-      logging: true,
       entities: [User, Wish, Wishlist, Offer],
       synchronize: true,
     }),
