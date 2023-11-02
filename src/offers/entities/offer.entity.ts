@@ -17,6 +17,8 @@ export class Offer extends CommonEntity {
   })
   amount: number;
 
-  @Column()
+  @Column({
+    default: false,
+  })
   hidden: boolean;
 }
