@@ -1,8 +1,8 @@
 {
   "name": "kupipodariday",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Сервис для создания вишлистов с подарками и возможностью скинуться на подарки друзьям",
+  "author": "Yulia Berezhnaya",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
