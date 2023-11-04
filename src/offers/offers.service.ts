@@ -14,22 +14,22 @@ export class OffersService {
   ) {}
 
   async create(createOfferDto: CreateOfferDto) {
-    return this.offersRepository.save(createOfferDto);
+    return await this.offersRepository.save(createOfferDto);
   }
 
   async findAll() {
-    return this.offersRepository.find();
+    return await this.offersRepository.find();
   }
 
   async findOne(id: number) {
-    return this.offersRepository.findOneByOrFail({ id });
+    return await this.offersRepository.findOneByOrFail({ id });
   }
 
   async update(id: number, updateOfferDto: UpdateOfferDto) {
-    return this.offersRepository.update(id, updateOfferDto);
+    return await this.offersRepository.update(id, updateOfferDto);
   }
 
   async remove(id: number) {
-    this.offersRepository.delete(id);
+    await this.offersRepository.delete(id);
   }
 }

@@ -11,6 +11,9 @@ import { User } from './users/entities/user.entity';
 import { Wish } from './wishes/entities/wish.entity';
 import { Wishlist } from './wishlists/entities/wishlist.entity';
 import { Offer } from './offers/entities/offer.entity';
+import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
+import configuration from './configs/configuration';
 
 @Module({
   imports: [
@@ -25,10 +28,16 @@ import { Offer } from './offers/entities/offer.entity';
       entities: [User, Wish, Wishlist, Offer],
       synchronize: true,
     }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+      load: [configuration],
+    }),
     UsersModule,
     WishesModule,
     WishlistsModule,
     OffersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

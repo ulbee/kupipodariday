@@ -14,22 +14,22 @@ export class WishlistsService {
   ) {}
 
   async create(createWishlistDto: CreateWishlistDto) {
-    return this.wishesRepository.create(createWishlistDto);
+    return await this.wishesRepository.create(createWishlistDto);
   }
 
   async findAll() {
-    return this.wishesRepository.find();
+    return await this.wishesRepository.find();
   }
 
   async findOne(id: number) {
-    return this.wishesRepository.findOneByOrFail({ id });
+    return await this.wishesRepository.findOneByOrFail({ id });
   }
 
   async update(id: number, updateWishlistDto: UpdateWishlistDto) {
-    return this.wishesRepository.update(id, updateWishlistDto);
+    return await this.wishesRepository.update(id, updateWishlistDto);
   }
 
   async remove(id: number) {
-    this.wishesRepository.delete(id);
+    await this.wishesRepository.delete(id);
   }
 }

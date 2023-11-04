@@ -6,15 +6,18 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { OffersService } from './offers.service';
 import { CreateOfferDto } from './dto/create-offer.dto';
 import { UpdateOfferDto } from './dto/update-offer.dto';
+import { LocalGuard } from 'src/guards/local.guard';
 
 @Controller('offers')
 export class OffersController {
   constructor(private readonly offersService: OffersService) {}
 
+  @UseGuards(LocalGuard)
   @Post()
   create(@Body() createOfferDto: CreateOfferDto) {
     return this.offersService.create(createOfferDto);

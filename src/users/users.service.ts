@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -11,18 +12,31 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-  ) {}
+  ) {
+    this.logger = new Logger(UsersService.name);
+  }
+
+  private readonly logger: Logger;
 
   async create(createUserDto: CreateUserDto) {
-    return this.usersRepository.save(createUserDto);
+    createUserDto.password = await bcrypt.hash(
+      String(createUserDto.password),
+      10,
+    );
+
+    return await this.usersRepository.save(createUserDto);
   }
 
   async findAll() {
-    return this.usersRepository.find();
+    return await this.usersRepository.find();
   }
 
   async findOne(id: number) {
-    return this.usersRepository.findOneByOrFail({ id });
+    return await this.usersRepository.findOneByOrFail({ id });
+  }
+
+  async findByUsername(username: string) {
+    return await this.usersRepository.findOneBy({ username });
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
@@ -30,6 +44,6 @@ export class UsersService {
   }
 
   async remove(id: number) {
-    this.usersRepository.delete(id);
+    await this.usersRepository.delete(id);
   }
 }
