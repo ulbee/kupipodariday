@@ -25,6 +25,7 @@ export class WishesService {
     return await this.wishesRepository.insert({
       ...createWishDto,
       owner: userId,
+      offers: [],
     });
   }
 

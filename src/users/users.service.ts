@@ -41,7 +41,12 @@ export class UsersService {
       this.hashSalt,
     );
 
-    return await this.usersRepository.save(createUserDto);
+    return await this.usersRepository.save({
+      ...createUserDto,
+      offers: [],
+      wishes: [],
+      wishlists: [],
+    });
   }
 
   async findAll() {
