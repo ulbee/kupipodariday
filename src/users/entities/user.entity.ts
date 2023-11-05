@@ -7,7 +7,9 @@ import { Entity, Column, OneToMany } from 'typeorm';
 
 @Entity('users')
 export class User extends CommonEntity {
-  @Column()
+  @Column({
+    unique: true,
+  })
   @Length(2, 30)
   username: string;
 

@@ -1,29 +1,47 @@
 import {
   Controller,
   Get,
-  Post,
+  // Post,
   Body,
   Patch,
   Param,
   Delete,
+  Req,
+  Logger,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
+// import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
-
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  constructor(private readonly usersService: UsersService) {
+    this.logger = new Logger(UsersController.name);
   }
 
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
+  private readonly logger: Logger;
+
+  // @Get()
+  // async findAll() {
+  //   return await this.usersService.findAll();
+  // }
+
+  @Get('me')
+  async showUserProfile(@Req() req) {
+    const user = await this.usersService.findOne(+req.user.id);
+    delete user.password;
+
+    return user;
   }
+
+  @Patch('me')
+  async editUserProfile(@Body() updateUserDto: UpdateUserDto, @Req() req) {
+    const user = await this.usersService.update(+req.user.id, updateUserDto);
+    delete user.password;
+    return user;
+  }
+
+  /////////////////////////////////////
 
   @Get(':id')
   findOne(@Param('id') id: string) {

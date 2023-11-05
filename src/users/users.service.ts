@@ -1,5 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import { Injectable, Logger } from '@nestjs/common';
+import { ConflictException, Injectable, Logger } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -17,11 +17,24 @@ export class UsersService {
   }
 
   private readonly logger: Logger;
+  private readonly hashSalt = 10;
 
   async create(createUserDto: CreateUserDto) {
+    const userExists = await this.usersRepository.find({
+      where: [
+        { username: createUserDto.username },
+        { email: createUserDto.email },
+      ],
+    });
+    if (userExists.length) {
+      throw new ConflictException(
+        'Пользователь с таким email или username уже зарегистрирован',
+      );
+    }
+
     createUserDto.password = await bcrypt.hash(
       String(createUserDto.password),
-      10,
+      this.hashSalt,
     );
 
     return await this.usersRepository.save(createUserDto);
@@ -40,7 +53,15 @@ export class UsersService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-    return this.usersRepository.update(id, updateUserDto);
+    if (updateUserDto.password) {
+      updateUserDto.password = await bcrypt.hash(
+        String(updateUserDto.password),
+        this.hashSalt,
+      );
+    }
+    await this.usersRepository.update(id, updateUserDto);
+
+    return await this.usersRepository.findOneByOrFail({ id });
   }
 
   async remove(id: number) {
