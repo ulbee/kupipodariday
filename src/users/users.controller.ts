@@ -41,6 +41,14 @@ export class UsersController {
     return user;
   }
 
+  @Get(':username')
+  async findByUsername(@Param('username') username: string) {
+    const user = await this.usersService.findByUsername(username);
+    delete user.password;
+
+    return user;
+  }
+
   /////////////////////////////////////
 
   @Get(':id')

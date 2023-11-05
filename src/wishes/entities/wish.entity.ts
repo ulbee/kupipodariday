@@ -28,6 +28,7 @@ export class Wish extends CommonEntity {
   @Column({
     type: 'numeric',
     scale: 2,
+    default: 0,
   })
   raised: number;
 
@@ -43,6 +44,7 @@ export class Wish extends CommonEntity {
 
   @Column({
     type: 'int',
+    default: 0,
   })
   copied: number;
 

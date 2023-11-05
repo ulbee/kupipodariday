@@ -1,5 +1,10 @@
 import * as bcrypt from 'bcrypt';
-import { ConflictException, Injectable, Logger } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -49,7 +54,11 @@ export class UsersService {
   }
 
   async findByUsername(username: string) {
-    return await this.usersRepository.findOneBy({ username });
+    const user = await this.usersRepository.findOneBy({ username });
+    if (!user) {
+      throw new NotFoundException('Такого пользователя не существует');
+    }
+    return user;
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
