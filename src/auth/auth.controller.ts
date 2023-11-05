@@ -1,4 +1,12 @@
-import { Controller, Post, UseGuards, Req, Body, Logger } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  UseGuards,
+  Req,
+  Body,
+  Logger,
+  SetMetadata,
+} from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 import { LocalGuard } from '../guards/local.guard';
@@ -15,12 +23,14 @@ export class AuthController {
 
   private readonly logger: Logger;
 
+  @SetMetadata('isPublic', true)
   @UseGuards(LocalGuard)
   @Post('signin')
   async signin(@Req() req) {
     return await this.authService.auth(req.user);
   }
 
+  @SetMetadata('isPublic', true)
   @Post('signup')
   async signup(@Body() createUserDto: CreateUserDto) {
     const user = await this.usersService.create(createUserDto);

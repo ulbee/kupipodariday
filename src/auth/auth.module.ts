@@ -18,6 +18,9 @@ import { LoggerModule } from '../logger/extended-logger.module';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('jwt_secret'),
+        signOptions: {
+          expiresIn: '1h',
+        },
       }),
       inject: [ConfigService],
     }),

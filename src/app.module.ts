@@ -14,6 +14,8 @@ import { Offer } from './offers/entities/offer.entity';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './configs/configuration';
+import { JWTGuard } from './guards/jwt.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -40,6 +42,12 @@ import configuration from './configs/configuration';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JWTGuard,
+    },
+  ],
 })
 export class AppModule {}
