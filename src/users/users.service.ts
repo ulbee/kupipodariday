@@ -11,6 +11,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
+import { USER_EXIST, USER_NOT_EXIST } from 'src/constants/users';
 
 @Injectable()
 export class UsersService {
@@ -32,9 +33,7 @@ export class UsersService {
       ],
     });
     if (userExists.length) {
-      throw new ConflictException(
-        'Пользователь с таким email или username уже зарегистрирован',
-      );
+      throw new ConflictException(USER_EXIST);
     }
 
     createUserDto.password = await bcrypt.hash(
@@ -56,7 +55,7 @@ export class UsersService {
   async findByUsername(username: string) {
     const user = await this.usersRepository.findOneBy({ username });
     if (!user) {
-      throw new NotFoundException('Такого пользователя не существует');
+      throw new NotFoundException(USER_NOT_EXIST);
     }
     return user;
   }

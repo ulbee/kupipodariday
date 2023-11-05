@@ -4,6 +4,7 @@ import { Offer } from 'src/offers/entities/offer.entity';
 import { Wish } from 'src/wishes/entities/wish.entity';
 import { Wishlist } from 'src/wishlists/entities/wishlist.entity';
 import { Entity, Column, OneToMany } from 'typeorm';
+import { DEFAULT_USER_ABOUT, DEFAULT_USER_AVATAR } from 'src/constants/users';
 
 @Entity('users')
 export class User extends CommonEntity {
@@ -14,13 +15,13 @@ export class User extends CommonEntity {
   username: string;
 
   @Column({
-    default: 'Пока ничего не рассказал о себе',
+    default: DEFAULT_USER_ABOUT,
   })
   @Length(2, 200)
   about: string;
 
   @Column({
-    default: 'https://i.pravatar.cc/300',
+    default: DEFAULT_USER_AVATAR,
   })
   @IsUrl()
   avatar: string;
