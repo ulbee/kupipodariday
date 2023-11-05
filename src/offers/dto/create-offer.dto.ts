@@ -8,7 +8,7 @@ import {
 
 export class CreateOfferDto {
   @IsNotEmpty()
-  public itemId: number;
+  public item: number;
 
   @IsNotEmpty()
   @IsNumber()
@@ -17,5 +17,5 @@ export class CreateOfferDto {
 
   @IsBoolean()
   @IsOptional()
-  public hidden: boolean;
+  public hidden: boolean = false;
 }
