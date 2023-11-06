@@ -101,14 +101,15 @@ export class UsersService {
     return await this.findByUsernameWithoutPassword(username);
   }
 
-  //TODO
   async findWishes(username: string) {
     const user = await this.usersRepository.findOne({
       where: { username },
-      relations: {
-        wishes: true,
-      },
+      relations: ['wishes', 'wishes.offers', 'wishes.offers.user'],
     });
+
+    if (!user) {
+      throw new NotFoundException(USER_NOT_EXIST);
+    }
 
     return user.wishes;
   }

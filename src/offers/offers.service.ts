@@ -34,6 +34,9 @@ export class OffersService {
       where: {
         id: createOfferDto.item,
       },
+      relations: {
+        owner: true,
+      },
     });
 
     if (wish.owner.id === userId) {
