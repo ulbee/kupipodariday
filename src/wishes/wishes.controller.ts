@@ -28,8 +28,8 @@ export class WishesController {
   }
 
   @Post(':id/copy')
-  async copyWish(@Param('id') id: string) {
-    return await this.wishesService.copyWish(+id);
+  async copyWish(@Param('id') id: string, @Req() req) {
+    return await this.wishesService.copyWish(+id, req.user.id);
   }
 
   @SetMetadata('isPublic', true)

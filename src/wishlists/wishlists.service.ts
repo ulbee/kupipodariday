@@ -76,8 +76,7 @@ export class WishlistsService {
   //         id: In([...updateWishlistDto.items]),
   //       },
   //     });
-  //     console.log('!!!!!!!!', wishes.length);
-  //     updatedWishlist.items = updateWishlistDto.items;
+  //     updatedWishlist.items = wishes;
   //   }
 
   //   return await this.wishlistsRepository.update(id, updatedWishlist);

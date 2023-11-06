@@ -2,7 +2,7 @@ import { Length, IsUrl, MaxLength } from 'class-validator';
 import { User } from 'src/users/entities/user.entity';
 import { CommonEntity } from 'src/utils/entities/common.entity';
 import { Wish } from 'src/wishes/entities/wish.entity';
-import { Entity, Column, ManyToMany, ManyToOne, JoinTable } from 'typeorm';
+import { Entity, Column, ManyToMany, ManyToOne } from 'typeorm';
 
 @Entity('wishlists')
 export class Wishlist extends CommonEntity {
@@ -18,21 +18,7 @@ export class Wishlist extends CommonEntity {
   @IsUrl()
   image: string;
 
-  @ManyToMany(() => Wish, (wish) => wish.id, {
-    onDelete: 'NO ACTION',
-    onUpdate: 'NO ACTION',
-  })
-  @JoinTable({
-    name: 'wishlists_items_wishes',
-    joinColumn: {
-      name: 'wishlistsId',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'wishesId',
-      referencedColumnName: 'id',
-    },
-  })
+  @ManyToMany(() => Wish, (wish) => wish.id)
   items: Wish[];
 
   @ManyToOne(() => User, (user) => user.wishlists)

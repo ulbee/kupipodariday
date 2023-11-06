@@ -66,7 +66,6 @@ export class WishesService {
     if (wish.owner.id !== userId) {
       throw new ForbiddenException('Вы не можете редактировать чужие подарки');
     }
-    //TODO проверить!!!
     if (wish.raised > 0 && updateWishDto.price) {
       throw new ForbiddenException(
         'Вы не можете редактировать цену, если уже есть желающие скинуться',
@@ -90,10 +89,12 @@ export class WishesService {
     return wish;
   }
 
-  async copyWish(id: number) {
-    const wish = await this.findOne(id);
+  async copyWish(id: number, userId) {
+    const { name, link, image, price, description, copied } =
+      await this.findOne(id);
 
-    await this.wishesRepository.update(id, { copied: ++wish.copied });
+    await this.wishesRepository.update(id, { copied: copied + 1 });
+    await this.create({ name, link, image, price, description }, userId);
 
     return {};
   }
