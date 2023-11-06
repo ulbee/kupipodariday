@@ -26,6 +26,22 @@ export class WishesController {
     return {};
   }
 
+  @Post(':id/copy')
+  async copyWish(@Param('id') id: string) {
+    return await this.wishesService.copyWish(+id);
+  }
+  /////////////////////
+  @Get('last')
+  async findLastWishes() {
+    const wishes = await this.wishesService.findWishes(40, 1);
+    return wishes[0];
+  }
+
+  @Get('top')
+  async findTopWishes() {
+    return await this.wishesService.findTopWishes(2);
+  }
+  ////////////////////
   @Get(':id')
   async findWishBiId(@Param('id') id: string) {
     return await this.wishesService.findWishBiId(+id);
@@ -45,11 +61,5 @@ export class WishesController {
   @Delete(':id')
   deleteWishById(@Param('id') id: string, @Req() req) {
     return this.wishesService.deleteWishById(+id, req.user.id);
-  }
-
-  /////////////////////////
-  @Get()
-  findAll() {
-    return this.wishesService.findAll();
   }
 }

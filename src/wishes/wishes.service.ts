@@ -7,15 +7,19 @@ import {
 import { CreateWishDto } from './dto/create-wish.dto';
 import { UpdateWishDto } from './dto/update-wish.dto';
 
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Wish } from './entities/wish.entity';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class WishesService {
   constructor(
+    private readonly dataSource: DataSource,
     @InjectRepository(Wish)
     private wishesRepository: Repository<Wish>,
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
   ) {
     this.logger = new Logger(WishesService.name);
   }
@@ -26,6 +30,14 @@ export class WishesService {
       ...createWishDto,
       owner: userId,
       offers: [],
+    });
+  }
+
+  async findOne(id: number) {
+    return await this.wishesRepository.findOne({
+      where: {
+        id,
+      },
     });
   }
 
@@ -78,8 +90,28 @@ export class WishesService {
     return wish;
   }
 
-  // //////////////////////////////
-  async findAll() {
-    return await this.wishesRepository.find();
+  async copyWish(id: number) {
+    const wish = await this.findOne(id);
+
+    await this.wishesRepository.update(id, { copied: ++wish.copied });
+
+    return {};
+  }
+
+  async findWishes(recordsOnPage: number, page: number) {
+    const take = recordsOnPage;
+    const skip = recordsOnPage * page;
+    return await this.wishesRepository.findAndCount({
+      order: { createdAt: 'ASC' },
+      take,
+      skip,
+    });
+  }
+
+  async findTopWishes(records: number) {
+    return this.wishesRepository.find({
+      order: { copied: 'DESC' },
+      take: records,
+    });
   }
 }
