@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateWishlistDto } from './dto/create-wishlist.dto';
-// import { UpdateWishlistDto } from './dto/update-wishlist.dto';
+import { UpdateWishlistDto } from './dto/update-wishlist.dto';
 
 import { In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -60,27 +60,30 @@ export class WishlistsService {
     return wishlist;
   }
 
-  // async update(id: number, updateWishlistDto: UpdateWishlistDto, userId) {
-  //   const wishlist = await this.findOne(id);
-  //   const updatedWishlist = { ...updateWishlistDto };
-  //   if (!wishlist) {
-  //     throw new NotFoundException(NOT_FOUND_WISHLIST);
-  //   }
-  //   if (wishlist.owner.id !== userId) {
-  //     throw new ForbiddenException(NOT_ENOUGH_RIGHTS);
-  //   }
+  async update(id: number, updateWishlistDto: UpdateWishlistDto, userId) {
+    const wishlist = await this.findOne(id);
+    const updatedWishlist = { ...updateWishlistDto };
+    if (!wishlist) {
+      throw new NotFoundException(NOT_FOUND_WISHLIST);
+    }
+    if (wishlist.owner.id !== userId) {
+      throw new ForbiddenException(NOT_ENOUGH_RIGHTS);
+    }
 
-  //   if (updateWishlistDto.items) {
-  //     const wishes = await this.wishesRepository.find({
-  //       where: {
-  //         id: In([...updateWishlistDto.items]),
-  //       },
-  //     });
-  //     updatedWishlist.items = wishes;
-  //   }
+    if (updateWishlistDto.items) {
+      const wishes = await this.wishesRepository.find({
+        where: {
+          id: In([...updateWishlistDto.items]),
+        },
+      });
+      updatedWishlist.items = wishes;
+    }
 
-  //   return await this.wishlistsRepository.update(id, updatedWishlist);
-  // }
+    return await this.wishlistsRepository.save({
+      id,
+      ...updatedWishlist,
+    });
+  }
 
   async remove(id: number, userId) {
     const wishlist = await this.findOne(id);

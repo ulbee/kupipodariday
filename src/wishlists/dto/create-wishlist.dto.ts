@@ -7,6 +7,8 @@ import {
   MaxLength,
   IsString,
 } from 'class-validator';
+import { Type } from 'class-transformer';
+import { Wish } from '../../wishes/entities/wish.entity';
 
 export class CreateWishlistDto {
   @IsString()
@@ -21,7 +23,8 @@ export class CreateWishlistDto {
   @MaxLength(1500)
   description: string = '';
 
+  @Type(() => Wish)
   @IsArray()
   @IsNumber({}, { each: true })
-  items: number[];
+  items: Wish[];
 }
