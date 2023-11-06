@@ -8,6 +8,7 @@ import {
   Delete,
   Req,
   InternalServerErrorException,
+  SetMetadata,
 } from '@nestjs/common';
 import { WishesService } from './wishes.service';
 import { CreateWishDto } from './dto/create-wish.dto';
@@ -30,18 +31,20 @@ export class WishesController {
   async copyWish(@Param('id') id: string) {
     return await this.wishesService.copyWish(+id);
   }
-  /////////////////////
+
+  @SetMetadata('isPublic', true)
   @Get('last')
   async findLastWishes() {
-    const wishes = await this.wishesService.findWishes(40, 1);
+    const wishes = await this.wishesService.findWishes(40, 0);
     return wishes[0];
   }
 
+  @SetMetadata('isPublic', true)
   @Get('top')
   async findTopWishes() {
     return await this.wishesService.findTopWishes(2);
   }
-  ////////////////////
+
   @Get(':id')
   async findWishBiId(@Param('id') id: string) {
     return await this.wishesService.findWishBiId(+id);

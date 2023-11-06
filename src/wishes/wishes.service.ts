@@ -102,7 +102,7 @@ export class WishesService {
     const take = recordsOnPage;
     const skip = recordsOnPage * page;
     return await this.wishesRepository.findAndCount({
-      order: { createdAt: 'ASC' },
+      order: { createdAt: 'DESC' },
       take,
       skip,
     });
