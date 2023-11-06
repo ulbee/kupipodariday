@@ -49,15 +49,39 @@ export class UsersService {
     });
   }
 
-  async findAll() {
-    return await this.usersRepository.find();
+  async findManyByUsernameOrEmail(query: string) {
+    return await this.usersRepository.find({
+      where: [{ username: query }, { email: query }],
+      select: {
+        id: true,
+        createdAt: true,
+        updatedAt: true,
+        username: true,
+        email: true,
+        about: true,
+        avatar: true,
+      },
+    });
   }
 
-  async findOne(id: number) {
-    return await this.usersRepository.findOneByOrFail({ id });
+  async findByUsernameWithoutPassword(username: string) {
+    return await this.usersRepository.findOne({
+      where: {
+        username,
+      },
+      select: {
+        id: true,
+        createdAt: true,
+        updatedAt: true,
+        username: true,
+        email: true,
+        about: true,
+        avatar: true,
+      },
+    });
   }
 
-  async findByUsername(username: string) {
+  async findByUsernameWithPassword(username: string) {
     const user = await this.usersRepository.findOneBy({ username });
     if (!user) {
       throw new NotFoundException(USER_NOT_EXIST);
@@ -65,19 +89,27 @@ export class UsersService {
     return user;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(username: string, updateUserDto: UpdateUserDto) {
     if (updateUserDto.password) {
       updateUserDto.password = await bcrypt.hash(
         String(updateUserDto.password),
         this.hashSalt,
       );
     }
-    await this.usersRepository.update(id, updateUserDto);
+    await this.usersRepository.update({ username }, updateUserDto);
 
-    return await this.usersRepository.findOneByOrFail({ id });
+    return await this.findByUsernameWithoutPassword(username);
   }
 
-  async remove(id: number) {
-    await this.usersRepository.delete(id);
+  //TODO
+  async findWishes(username: string) {
+    const user = await this.usersRepository.findOne({
+      where: { username },
+      relations: {
+        wishes: true,
+      },
+    });
+
+    return user.wishes;
   }
 }

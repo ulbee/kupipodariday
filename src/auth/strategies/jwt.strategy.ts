@@ -20,8 +20,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   private readonly logger: Logger;
 
-  async validate(jwtPayload: { sub: number }) {
-    const user = await this.usersService.findOne(jwtPayload.sub);
+  async validate(jwtPayload: { sub: string }) {
+    const user = await this.usersService.findByUsernameWithoutPassword(
+      jwtPayload.sub,
+    );
 
     if (!user) {
       throw new UnauthorizedException();

@@ -1,14 +1,27 @@
-import { IsUrl, Length } from 'class-validator';
+import {
+  IsOptional,
+  IsUrl,
+  Length,
+  IsArray,
+  IsNumber,
+  MaxLength,
+  IsString,
+} from 'class-validator';
 
 export class CreateWishlistDto {
+  @IsString()
   @Length(1, 250)
   name: string;
 
   @IsUrl()
   image: string;
 
-  @Length(1500)
-  description: string;
+  @IsOptional()
+  @IsString()
+  @MaxLength(1500)
+  description: string = '';
 
-  itemsId: number[];
+  @IsArray()
+  @IsNumber({}, { each: true })
+  items: number[];
 }

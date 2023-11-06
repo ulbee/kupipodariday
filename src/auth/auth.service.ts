@@ -18,7 +18,7 @@ export class AuthService {
   private readonly logger: Logger;
 
   auth(user: User) {
-    const payload = { sub: user.id };
+    const payload = { sub: user.username };
 
     return {
       access_token: this.jwtService.sign(payload, {
@@ -28,7 +28,7 @@ export class AuthService {
   }
 
   async validatePassword(username: string, password: string) {
-    const user = await this.usersService.findByUsername(username);
+    const user = await this.usersService.findByUsernameWithPassword(username);
 
     if (!user) {
       return null;

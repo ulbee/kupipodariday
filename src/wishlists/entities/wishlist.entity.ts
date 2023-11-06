@@ -1,4 +1,4 @@
-import { Length, IsUrl } from 'class-validator';
+import { Length, IsUrl, MaxLength } from 'class-validator';
 import { User } from 'src/users/entities/user.entity';
 import { CommonEntity } from 'src/utils/entities/common.entity';
 import { Wish } from 'src/wishes/entities/wish.entity';
@@ -11,17 +11,30 @@ export class Wishlist extends CommonEntity {
   name: string;
 
   @Column()
-  @Length(1500)
+  @MaxLength(1500)
   description: string;
 
   @Column()
   @IsUrl()
   image: string;
 
-  @ManyToMany(() => Wish, (wish) => wish.id)
-  @JoinTable()
+  @ManyToMany(() => Wish, (wish) => wish.id, {
+    onDelete: 'NO ACTION',
+    onUpdate: 'NO ACTION',
+  })
+  @JoinTable({
+    name: 'wishlists_items_wishes',
+    joinColumn: {
+      name: 'wishlistsId',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'wishesId',
+      referencedColumnName: 'id',
+    },
+  })
   items: Wish[];
 
   @ManyToOne(() => User, (user) => user.wishlists)
-  user: User;
+  owner: User;
 }

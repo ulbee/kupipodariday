@@ -1,13 +1,12 @@
 import {
   Controller,
   Get,
-  // Post,
   Body,
   Patch,
   Param,
-  Delete,
   Req,
   Logger,
+  Post,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -20,48 +19,35 @@ export class UsersController {
 
   private readonly logger: Logger;
 
-  // @Get()
-  // async findAll() {
-  //   return await this.usersService.findAll();
-  // }
+  @Get('me/wishes')
+  async showMyWishes(@Req() req) {
+    return await this.usersService.findWishes(req.user.username);
+  }
 
   @Get('me')
   async showUserProfile(@Req() req) {
-    const user = await this.usersService.findOne(+req.user.id);
-    delete user.password;
-
-    return user;
+    return await this.usersService.findByUsernameWithoutPassword(
+      req.user.username,
+    );
   }
 
   @Patch('me')
   async editUserProfile(@Body() updateUserDto: UpdateUserDto, @Req() req) {
-    const user = await this.usersService.update(+req.user.id, updateUserDto);
-    delete user.password;
-    return user;
+    return this.usersService.update(req.user.username, updateUserDto);
+  }
+
+  @Get(':username/wishes')
+  async showUserWishes(@Param('username') username: string) {
+    return await this.usersService.findWishes(username);
   }
 
   @Get(':username')
   async findByUsername(@Param('username') username: string) {
-    const user = await this.usersService.findByUsername(username);
-    delete user.password;
-
-    return user;
+    return await this.usersService.findByUsernameWithoutPassword(username);
   }
 
-  /////////////////////////////////////
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  @Post('find')
+  async findManyByUsernameOrEmail(@Body() data: { query: string }) {
+    return await this.usersService.findManyByUsernameOrEmail(data.query);
   }
 }

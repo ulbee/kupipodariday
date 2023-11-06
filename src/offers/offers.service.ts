@@ -34,21 +34,9 @@ export class OffersService {
       where: {
         id: createOfferDto.item,
       },
-      relations: {
-        owner: true,
-        offers: true,
-      },
-    });
-    const user = await this.usersRepository.findOne({
-      where: {
-        id: userId,
-      },
-      relations: {
-        offers: true,
-      },
     });
 
-    if (wish.owner.id === user.id) {
+    if (wish.owner.id === userId) {
       throw new ForbiddenException(CANT_OFFER_PRICE);
     }
     if (createOfferDto.amount > wish.price - wish.raised) {
@@ -58,22 +46,16 @@ export class OffersService {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
-    // TODO переписать с использованием queryBuilder
     try {
-      const offer = await this.offersRepository.save({
+      await this.offersRepository.save({
         ...createOfferDto,
         user: userId,
         item: wish,
       });
 
       await this.wishesRepository.update(wish.id, {
-        raised: wish.raised + createOfferDto.amount,
-        offers: [...wish.offers, offer],
+        raised: +wish.raised + +createOfferDto.amount,
       });
-
-      // await this.usersRepository.update(userId, {
-      // offers: [...user.offers, offer],
-      // });
 
       await queryRunner.commitTransaction();
     } catch (err) {
@@ -86,6 +68,7 @@ export class OffersService {
     return {};
   }
 
+  //TODO удалить password из ответа
   async findAll() {
     return await this.offersRepository.find({
       relations: {
